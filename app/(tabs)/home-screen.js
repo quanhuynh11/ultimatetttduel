@@ -1,25 +1,25 @@
-import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import MainLayout from './layouts/main-layout';
+import MainLayout from '../layouts/main-layout';
 import { useRouter } from 'expo-router';
 
-const Index = () => {
+const HomeScreen = () => {
 
     const router = useRouter();
 
     return (
         <MainLayout>
             <View style={styles.container}>
-                <Text style={styles.textStyle}>Ultimate T-T-T Duel</Text>
+                <Text style={styles.textStyle}>Welcome To Ultimate T-T-T Duel!</Text>
             </View>
-            <TouchableOpacity style={styles.container} onPress={() => router.push("/home-screen")}>
-                <Text style={styles.button}>START</Text>
+            <TouchableOpacity style={styles.container} onPress={() => router.push("../duel/create-match")}>
+                <Text style={styles.button}>PLAY</Text>
             </TouchableOpacity>
         </MainLayout>
     );
 };
 
-export default Index;
+export default HomeScreen;
 
 const styles = StyleSheet.create({
     textStyle: {
