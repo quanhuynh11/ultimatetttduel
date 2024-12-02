@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import MainLayout from '../layouts/main-layout';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-
 import { createWinners } from '../../api/api';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';

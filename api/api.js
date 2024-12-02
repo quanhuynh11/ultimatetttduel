@@ -27,3 +27,13 @@ export const createWinners = async (winner) => {
     }
 };
 
+export const deleteWinners = async (winnerID) => {
+    try {
+        const response = await api.delete(`/winners/${winnerID}`);
+        return response.data;
+    } catch (error) {
+        console.error("error in deleting data: ", error);
+        throw error;
+    }
+};
+

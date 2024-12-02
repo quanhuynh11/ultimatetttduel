@@ -5,8 +5,8 @@ import { useRouter } from 'expo-router';
 
 const CreateMatch = () => {
 
-    const [playerOneName, setPlayerOneName] = useState(null);
-    const [playerTwoName, setPlayerTwoName] = useState(null);
+    const [playerOneName, setPlayerOneName] = useState(undefined);
+    const [playerTwoName, setPlayerTwoName] = useState(undefined);
     const [turnTime, setTurnTime] = useState(30);
 
     const router = useRouter();
