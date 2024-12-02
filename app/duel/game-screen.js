@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import MainLayout from '../layouts/main-layout';
 import { useLocalSearchParams } from 'expo-router';
 
+
+
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+
 const GameScreen = () => {
 
-    const { playerOne, playerTwo} = useLocalSearchParams();
+    const { playerOne, playerTwo } = useLocalSearchParams();
 
     const [board, setBoard] = useState(Array(9).fill(null));
     const [currentPlayer, setCurrentPlayer] = useState(playerOne);
@@ -13,10 +17,12 @@ const GameScreen = () => {
     const [isXNext, setIsXNext] = useState(true);
     const [winner, setWinner] = useState(null);
 
+    const [winnerData, setWinnerData] = useState([]);
+
     const handleSquarePress = (index) => {
         if (board[index] || winner) return;
 
-        if(!isXNext) {
+        if (!isXNext) {
             setCurrentPlayer(playerOne);
         }
         else {
@@ -31,7 +37,7 @@ const GameScreen = () => {
         checkWinner(newBoard);
     };
 
-    const checkWinner = (board) => {
+    const checkWinner = async (board) => {
         const winningCombinations = [
             [0, 1, 2],
             [3, 4, 5],
@@ -49,6 +55,7 @@ const GameScreen = () => {
                 const winnerName = board[a] === "X" ? playerOne : playerTwo;
 
                 setWinner(winnerName);
+                await saveGameData(winnerName);
                 return;
             };
         };
@@ -56,6 +63,28 @@ const GameScreen = () => {
         if (!board.includes(null)) {
             setIsDraw(true);
             setWinner("No One");
+        };
+    };
+
+    const handleSurrender = async () => {
+        if (!winner) {
+            setWinner(!isXNext ? playerOne : playerTwo);
+            await saveGameData(winnerName);
+        }
+    };
+
+    const saveGameData = async (winner) => {
+        try {
+            // Define the file path where the winner name will be saved
+            const filePath = `${RNFS.DocumentDirectoryPath}/winners.txt`;
+
+            // Save the winner's name to the file
+            await RNFS.writeFile(filePath, winner, 'utf8');
+            console.log(`Winner saved to: ${filePath}`);
+
+
+        } catch (error) {
+            Alert.alert("Error Saving Game", error.message);
         };
     };
 
@@ -72,13 +101,19 @@ const GameScreen = () => {
 
     return (
         <MainLayout>
-            {!winner &&( 
+            <View style={styles.flagContainer}>
+                <TouchableOpacity onPress={handleSurrender}>
+                    <FontAwesome name="flag" size={48} color="white" />
+                </TouchableOpacity>
+            </View>
+
+            {!winner && (
                 <View style={styles.board}>
                     <Text style={styles.turnText}> {currentPlayer.toUpperCase()}'s Turn!</Text>
                     <Text style={styles.currentTurnText} >{isXNext ? "X" : "O"}</Text>
                 </View>
             )}
-            {winner && <Text style={styles.winnerText}>{winner} wins!</Text>}
+            {winner && <Text style={styles.winnerText}>{winner.toUpperCase()} wins!</Text>}
             <View style={styles.board}>
                 <View style={styles.row}>
                     {renderSquare(0)}
@@ -140,5 +175,13 @@ const styles = StyleSheet.create({
     currentTurnText: {
         fontSize: 40,
         color: "white"
-    }
+    },
+
+    flagContainer: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+        margin: 40
+
+    },
 });
