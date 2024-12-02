@@ -1,23 +1,22 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import MainLayout from '../layouts/main-layout';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 
-
+import { createWinners } from '../../api/api';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const GameScreen = () => {
 
+    const navigator = useNavigation();
+
     const { playerOne, playerTwo } = useLocalSearchParams();
 
     const [board, setBoard] = useState(Array(9).fill(null));
     const [currentPlayer, setCurrentPlayer] = useState(playerOne);
-    const [isDraw, setIsDraw] = useState(false);
     const [isXNext, setIsXNext] = useState(true);
     const [winner, setWinner] = useState(null);
-
-    const [winnerData, setWinnerData] = useState([]);
 
     const handleSquarePress = (index) => {
         if (board[index] || winner) return;
@@ -56,7 +55,6 @@ const GameScreen = () => {
 
                 setWinner(winnerName);
                 await saveGameData(winnerName);
-                return;
             };
         };
 
@@ -68,20 +66,24 @@ const GameScreen = () => {
 
     const handleSurrender = async () => {
         if (!winner) {
-            setWinner(!isXNext ? playerOne : playerTwo);
-            await saveGameData(winnerName);
+            const winnerName = isXNext ? playerTwo : playerOne;
+
+            setWinner(winnerName);
+
+            try {
+                await saveGameData(winnerName);
+            } catch (error) {
+                console.error("Error handling surrender:", error);
+            }
         }
     };
 
     const saveGameData = async (winner) => {
         try {
-            // Define the file path where the winner name will be saved
-            const filePath = `${RNFS.DocumentDirectoryPath}/winners.txt`;
-
-            // Save the winner's name to the file
-            await RNFS.writeFile(filePath, winner, 'utf8');
-            console.log(`Winner saved to: ${filePath}`);
-
+            if (winner) {
+                const response = await createWinners(winner);
+                console.log(response);
+            }
 
         } catch (error) {
             Alert.alert("Error Saving Game", error.message);
@@ -101,11 +103,14 @@ const GameScreen = () => {
 
     return (
         <MainLayout>
-            <View style={styles.flagContainer}>
-                <TouchableOpacity onPress={handleSurrender}>
-                    <FontAwesome name="flag" size={48} color="white" />
-                </TouchableOpacity>
-            </View>
+            {!winner && (
+                <View style={styles.flagContainer}>
+                    <TouchableOpacity onPress={handleSurrender}>
+                        <FontAwesome name="flag" size={48} color="white" />
+                    </TouchableOpacity>
+                </View>
+
+            )}
 
             {!winner && (
                 <View style={styles.board}>
@@ -131,6 +136,11 @@ const GameScreen = () => {
                     {renderSquare(8)}
                 </View>
             </View>
+            {winner && (
+                <TouchableOpacity style={styles.container} onPress={() => navigator.navigate("(tabs)")}>
+                    <Text style={styles.button}>HOME</Text>
+                </TouchableOpacity>
+            )}
         </MainLayout>
     );
 };
@@ -183,5 +193,19 @@ const styles = StyleSheet.create({
         right: 10,
         margin: 40
 
+    },
+    container: {
+        marginTop: 200,
+    },
+
+    button: {
+        textAlign: "center",
+        color: "white",
+        fontSize: 25,
+        backgroundColor: "dodgerblue",
+        padding: 25,
+        paddingRight: 80,
+        paddingLeft: 80,
+        borderRadius: 40
     },
 });
