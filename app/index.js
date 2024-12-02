@@ -12,7 +12,7 @@ const Index = () => {
             <View style={styles.container}>
                 <Text style={styles.textStyle}>Ultimate T-T-T Duel</Text>
             </View>
-            <TouchableOpacity style={styles.container} onPress={() => router.push("/home-screen")}>
+            <TouchableOpacity style={styles.container} onPress={() => router.push("/duel/home-screen")}>
                 <Text style={styles.button}>START</Text>
             </TouchableOpacity>
         </MainLayout>

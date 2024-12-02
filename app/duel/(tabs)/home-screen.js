@@ -1,18 +1,18 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import MainLayout from '../layouts/main-layout';
-import { useRouter } from 'expo-router';
+import { useNavigation } from 'expo-router';
+import MainLayout from '../../layouts/main-layout';
 
 const HomeScreen = () => {
 
-    const router = useRouter();
+    const navigator = useNavigation();
 
     return (
         <MainLayout>
             <View style={styles.container}>
                 <Text style={styles.textStyle}>Welcome To Ultimate T-T-T Duel!</Text>
             </View>
-            <TouchableOpacity style={styles.container} onPress={() => router.push("../duel/create-match")}>
+            <TouchableOpacity style={styles.container} onPress={() => navigator.navigate("create-match")}>
                 <Text style={styles.button}>PLAY</Text>
             </TouchableOpacity>
         </MainLayout>

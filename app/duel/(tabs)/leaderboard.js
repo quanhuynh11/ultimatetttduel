@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import MainLayout from '../layouts/main-layout';
+import MainLayout from '../../layouts/main-layout';
 
 const Leaderboard = () => {
     return (
