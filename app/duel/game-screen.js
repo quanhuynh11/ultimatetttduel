@@ -55,7 +55,7 @@ const GameScreen = () => {
                 const winnerName = board[a] === "X" ? playerOne : playerTwo;
 
                 setWinner(winnerName);
-                await saveGameData(winnerName.toUpperCase());
+                await saveGameData(winnerName);
                 winnerDetected = true;
             };
         };
