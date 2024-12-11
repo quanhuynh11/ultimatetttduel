@@ -47,18 +47,20 @@ const GameScreen = () => {
             [2, 4, 6]
         ];
 
+        let winnerDetected = false;
+
         for (let combination of winningCombinations) {
             const [a, b, c] = combination;
             if (board[a] && board[a] === board[b] && board[a] === board[c]) {
                 const winnerName = board[a] === "X" ? playerOne : playerTwo;
 
                 setWinner(winnerName);
-                await saveGameData(winnerName);
+                await saveGameData(winnerName.toUpperCase());
+                winnerDetected = true;
             };
         };
 
-        if (!board.includes(null)) {
-            setIsDraw(true);
+        if (!winnerDetected && !board.includes(null)) {
             setWinner("No One");
         };
     };
